@@ -35,7 +35,12 @@ class json_to_html(object): #создаем класс.Его задача-ко�
     def dictionary_to_xml(self, node):
         new_tags = []
         for tag, value in node.items():
-            new_tags.append("<"+tag+">" + value + "</"+tag+">")
+            if isinstance(value, dict):
+                new_tags.append("<"+tag+">" + self.dictionary_to_xml(value) + "</"+tag+">")
+            elif isinstance(value, list):
+                new_tags.append("<" + tag + ">" + self.parse(value) + "</" + tag + ">")
+            else:
+                new_tags.append("<" + tag + ">" + value + "</" + tag + ">")
         return u''.join(new_tags)
 
     def parse(self, data):
