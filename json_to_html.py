@@ -25,21 +25,26 @@ class json_to_html(object): #создаем класс.Его задача-ко�
         data = json.loads(path.read_text(encoding='utf-8'))#ставим флаг на utf
         return data
 
+    def list_checking(self, data):
+        if isinstance(data, list):
+            item = self.parse(data)
+        else:
+            item = self.dictionary_to_xml(data)
+        return item
+
     def dictionary_to_xml(self, node):
         new_tags = []
         for tag, value in node.items():
-            new_tags.append("<"+tag+">" + value + "</"+tag+">")# словари в питоне не упорядочены поэтому не всегда выдает верную последовательность
-            # возмонжо проблему можно решить через вложенные словари либо регулярные выражения
+            new_tags.append("<"+tag+">" + value + "</"+tag+">")
         return u''.join(new_tags)
 
     def parse(self, data):
         new_items = []
         for i in data:
-            new_items.append(self.dictionary_to_xml(i))
-        print(u''.join(new_items))
-
+            new_items.append("<li>" + self.dictionary_to_xml(i) + "<li>")
+        return '<ul>' + u''.join(new_items) + '</ul>'
 
 if __name__ == '__main__':
     example = json_to_html()
     data = example.loader()
-    example.parse(data)
+    print (example.list_checking(data))
